@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  redis_container:
+    container_name: xlogin-jp-balance-sheet-container-redis
+    build:
+      context: ../../
+      dockerfile: ./service/redis/docker/Dockerfile
+    volumes:
+      - xlogin-jp-balance-sheet-rc-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli","ping"]
+
+
+  static_web_container:
+    container_name: xlogin-jp-balance-sheet-container-static-web
+    build:
+      context: ../../
+      dockerfile: ./service/staticWeb/docker/Dockerfile
+    tty: true
+    ports:
+      - 127.0.0.1:3009:3009
+    volumes:
+      - ../../service/staticWeb/src:/app
+      - xlogin-jp-balance-sheet-wsc-nm:/app/node_modules
+    depends_on:
+      redis_container: 
+        condition: service_healthy
+    command: sh -c "rm /tmp/setup.done || true && yarn run start-watch"
+    healthcheck:
+      test: ls /tmp/setup.done
+      interval: 5s
+      timeout : 5s
+      retries: 10
+
+volumes:
+  xlogin-jp-balance-sheet-rc-redis:
+  xlogin-jp-balance-sheet-wsc-nm:
+
