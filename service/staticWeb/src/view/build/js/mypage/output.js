@@ -1,42 +1,17 @@
 /* create elm */
-export const showUserProfile = ({ userInfoResult, applyElmList }) => {
-  const { userInfo } = userInfoResult
-
-  Object.entries(userInfo?.public || {}).forEach(([key, value]) => {
-    applyElmList(`[data-var='${key}']`, (elm) => {
-      elm.clearChildren()
-      elm.appendChild(document.createTextNode(value))
-    })
-  })
-}
-
 
 /* request */
-export const getAddTimer = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/timer/add`
-  return () => {
-    return postRequest(url)
-  }
-}
-
-export const getAddNotification = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/notification/add`
-  return () => {
-    return postRequest(url)
-  }
-}
-
 export const getSaveMessage = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/message/save`
+  const url = `${apiEndpoint}/company/save`
   return () => {
     const messageContentElm = document.querySelector('#messageContent')
-    const param = { message: messageContentElm.value }
+    const param = { company: messageContentElm.value }
     return postRequest(url, param)
   }
 }
 
 export const getDeleteMessage = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/message/delete`
+  const url = `${apiEndpoint}/company/delete`
   return () => {
     const param = {}
     return postRequest(url, param)

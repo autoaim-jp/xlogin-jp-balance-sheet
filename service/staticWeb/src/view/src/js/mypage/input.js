@@ -5,23 +5,9 @@ export const fetchUserProfile = ({ apiEndpoint, getRequest }) => {
 }
 
 export const fetchMessage = ({ apiEndpoint, getRequest }) => {
-  const url = `${apiEndpoint}/message/content`
+  const url = `${apiEndpoint}/company/content`
   return getRequest(url)
 }
-
-
-export const getBackupEmailAddress = ({ userInfoResult }) => {
-  const backupEmailAddress = userInfoResult?.userInfo?.public?.['auth:backupEmailAddress']
-  return backupEmailAddress || ''
-}
-
-export const getFetchUploadedFileList = ({ apiEndpoint, getRequest }) => {
-  return () => {
-    const url = `${apiEndpoint}/file/list`
-    return getRequest(url)
-  }
-}
-
 
 export default {}
 

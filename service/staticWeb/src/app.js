@@ -49,67 +49,25 @@ const _getOtherRouter = () => {
 const _getActionRouter = () => {
   const expressRouter = express.Router()
 
-  const timerAddHandler = a.action.getHandlerTimerAdd(argNamed({
-    core: [a.core.handleTimerAdd, a.core.createResponse],
+  const companySaveHandler = a.action.getHandlerCompanySave(argNamed({
+    core: [a.core.handleCompanySave, a.core.createResponse],
   }))
-  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/timer/add`, timerAddHandler)
+  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/company/save`, companySaveHandler)
 
-  const notificationAddHandler = a.action.getHandlerNotificationAdd(argNamed({
-    core: [a.core.handleNotificationAdd, a.core.createResponse],
+  const companyContentHandler = a.action.getHandlerCompanyContent(argNamed({
+    core: [a.core.handleCompanyContent, a.core.createResponse],
   }))
-  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/notification/add`, notificationAddHandler)
+  expressRouter.get(`${setting.browserServerSetting.getValue('apiEndpoint')}/company/content`, companyContentHandler)
 
-  const notificationOpenHandler = a.action.getHandlerNotificationOpen(argNamed({
-    core: [a.core.handleNotificationOpen, a.core.createResponse],
+  const companyDeleteHandler = a.action.getHandlerCompanyDelete(argNamed({
+    core: [a.core.handleCompanyDelete, a.core.createResponse],
   }))
-  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/notification/open`, notificationOpenHandler)
-
-  const notificationListHandler = a.action.getHandlerNotificationList(argNamed({
-    core: [a.core.handleInvalidSession, a.core.handleNotificationList, a.core.createResponse],
-  }))
-  expressRouter.get(`${setting.browserServerSetting.getValue('apiEndpoint')}/notification/list`, notificationListHandler)
-
-  const messageSaveHandler = a.action.getHandlerMessageSave(argNamed({
-    core: [a.core.handleMessageSave, a.core.createResponse],
-  }))
-  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/message/save`, messageSaveHandler)
-
-  const messageContentHandler = a.action.getHandlerMessageContent(argNamed({
-    core: [a.core.handleMessageContent, a.core.createResponse],
-  }))
-  expressRouter.get(`${setting.browserServerSetting.getValue('apiEndpoint')}/message/content`, messageContentHandler)
-
-  const messageDeleteHandler = a.action.getHandlerMessageDelete(argNamed({
-    core: [a.core.handleMessageDelete, a.core.createResponse],
-  }))
-  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/message/delete`, messageDeleteHandler)
-
-  const updateBackupEmailAddressHandler = a.action.getHandlerUpdateBackupEmailAddress(argNamed({
-    core: [a.core.handleUpdateBackupEmailAddress, a.core.createResponse],
-  }))
-  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/backupEmailAddress/save`, updateBackupEmailAddressHandler)
+  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/company/delete`, companyDeleteHandler)
 
   const splitPermissionListHandler = a.action.getHandlerSplitPermissionList(argNamed({
     core: [a.core.handleInvalidSession, a.core.handleSplitPermissionList, a.core.createResponse],
   }))
   expressRouter.get(`${setting.browserServerSetting.getValue('apiEndpoint')}/session/splitPermissionList`, splitPermissionListHandler)
-
-  const uploadFileHandler = a.action.getHandlerUploadFile(argNamed({
-    core: [a.core.handleUploadFile, a.core.createResponse],
-    mod: [multer, FormData, Readable],
-  }))
-  expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/form/save`, uploadFileHandler)
-
-  const fileListHandler = a.action.getHandlerFileList(argNamed({
-    core: [a.core.handleFileList, a.core.createResponse],
-  }))
-  expressRouter.get(`${setting.browserServerSetting.getValue('apiEndpoint')}/file/list`, fileListHandler)
-
-  const fileContentHandler = a.action.getHandlerFileContent(argNamed({
-    core: [a.core.handleFileContent],
-  }))
-  expressRouter.get(`${setting.browserServerSetting.getValue('apiEndpoint')}/file/content`, fileContentHandler)
-
 
   return expressRouter
 }

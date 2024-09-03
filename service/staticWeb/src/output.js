@@ -30,13 +30,13 @@ const notificationOpenRequest = ({
 }
 
 const fileSaveRequest = ({
-  accessToken, message, MESSAGE_FILE_PATH, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, postRequest,
+  accessToken, company, MESSAGE_FILE_PATH, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, postRequest,
 }) => {
   const path = `/api/${API_VERSION}/json/update`
   const param = {
     owner: CLIENT_ID,
     jsonPath: MESSAGE_FILE_PATH,
-    content: message,
+    content: company,
   }
 
   return postRequest(CLIENT_ID, accessToken, API_SERVER_ORIGIN, path, param)
