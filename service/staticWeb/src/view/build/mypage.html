@@ -374,24 +374,90 @@ function navSidemenuData () {
 <script>
 function chartData() {
   return {
-    showChart () {
+    async showChart () {
+      const messageResult = await a.input.fetchMessage(argNamed({
+        browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
+        lib: [a.lib.common.input.getRequest],
+      }))
+      const companyJson = messageResult?.result?.jsonContent
+      console.log({ companyJson })
+      const transpose = a => a[0].map((_, c) => a.map(r => r[c]))
+      const companyJsonParsed = companyJson.split('\n').map((row) => {
+        return row.split('\t').map((val) => { return val.trim() })
+      })
+ 
+      console.log({ companyJsonParsed })
+
+      const datasetLabelList = companyJsonParsed.splice(0, 1)[0]
+      const dataListList = transpose(companyJsonParsed.slice())
+      const labelList = dataListList.splice(0, 1)[0]
+
+      // 発表日を削除
+      datasetLabelList.splice(datasetLabelList.length - 1)
+      dataListList.splice(dataListList.length - 1)
+
+      // 修正一株利益を削除
+      datasetLabelList.splice(datasetLabelList.length - 2, 1)
+      dataListList.splice(dataListList.length - 2, 1)
+
+      // 決算期を削除
+      datasetLabelList.splice(0, 1)
+
+      console.log({ datasetLabelList, labelList, dataListList })
+
+      const datasetList = Object.entries(datasetLabelList).map(([i, datasetLabel]) => {
+        let yAxisID = 'leftAxis'
+        if (i === '4') {
+          yAxisID = 'rightAxis'
+        }
+        return {
+          label: datasetLabel,
+          data: dataListList[i],
+          yAxisID,
+        }
+      })
+      console.log({ datasetList })
+
       const ctx = document.getElementById('myChart');
 
+      const data = {
+        labels: labelList,
+        datasets: datasetList,
+        /*
+        [
+          {
+            label: 'Dataset 1',
+            data: dataList1,
+            borderColor: '#ff0000',
+          },
+          {
+            label: 'Dataset 2',
+            data: dataList2,
+            borderColor: '#0000ff',
+          }
+        ]
+        */
+      }
+
       new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            borderWidth: 1
-          }]
-        },
+        type: 'line',
+        data,
         options: {
           scales: {
-            y: {
-              beginAtZero: true
-            }
+            leftAxis: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+            },
+            rightAxis: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+
+              grid: {
+                drawOnChartArea: false, // only want the grid lines for one axis to show up
+              },
+            },
           }
         }
       });
