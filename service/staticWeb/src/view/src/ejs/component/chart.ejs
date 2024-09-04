@@ -15,7 +15,7 @@ function chartData() {
       console.log({ companyJson })
       const transpose = a => a[0].map((_, c) => a.map(r => r[c]))
       const companyJsonParsed = companyJson.split('\n').map((row) => {
-        return row.split('\t').map((val) => { return val.trim() })
+        return row.split('\t').map((val) => { return val.trim().replace(/,/g, '') })
       })
  
       console.log({ companyJsonParsed })
