@@ -35,6 +35,8 @@ const loadMessageBtn = () => {
     lib: [a.lib.common.output.postRequest],
   }))
   const onClickSaveMessageButton = a.action.getOnClickSaveMessageButton(argNamed({
+    input: [a.input.getMessageValue],
+    core: [a.core.parseMessage],
     output: { saveMessage },
   }))
   a.output.setOnClickSaveMessageButton(argNamed({

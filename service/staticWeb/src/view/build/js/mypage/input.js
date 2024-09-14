@@ -1,4 +1,10 @@
 /* mypage/input.js */
+export const getMessageValue = () => {
+  const message = document.querySelector('#messageContent').value
+
+  return { message }
+}
+
 export const fetchUserProfile = ({ apiEndpoint, getRequest }) => {
   const url = `${apiEndpoint}/user/profile`
   return getRequest(url)

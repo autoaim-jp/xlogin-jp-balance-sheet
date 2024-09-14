@@ -10,13 +10,13 @@ const notificationListRequest = async ({
 }
 
 const fileGetRequest = async ({
-  accessToken, MESSAGE_FILE_PATH, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, getRequest,
+  accessToken, COMPANY_FILE_PATH, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, getRequest,
 }) => {
   const origin = API_SERVER_ORIGIN
   const path = `/api/${API_VERSION}/json/content`
   const param = {
     owner: CLIENT_ID,
-    jsonPath: MESSAGE_FILE_PATH,
+    jsonPath: COMPANY_FILE_PATH,
   }
   return getRequest(CLIENT_ID, accessToken, origin, path, param)
 }

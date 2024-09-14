@@ -3,9 +3,8 @@
 /* request */
 export const getSaveMessage = ({ apiEndpoint, postRequest }) => {
   const url = `${apiEndpoint}/company/save`
-  return () => {
-    const messageContentElm = document.querySelector('#messageContent')
-    const param = { company: messageContentElm.value }
+  return ({ parsedMessage }) => {
+    const param = { company: parsedMessage }
     return postRequest(url, param)
   }
 }

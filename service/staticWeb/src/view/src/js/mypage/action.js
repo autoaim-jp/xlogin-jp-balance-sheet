@@ -1,6 +1,8 @@
-export const getOnClickSaveMessageButton = ({ saveMessage }) => {
+export const getOnClickSaveMessageButton = ({ getMessageValue, parseMessage, saveMessage }) => {
   return () => {
-    saveMessage()
+    const { message } = getMessageValue()
+    const { parsedMessage } = parseMessage({ message })
+    saveMessage({ parsedMessage })
   }
 }
 
