@@ -87,6 +87,26 @@ export const getLoadUploadedImg = ({ apiEndpoint }) => {
 }
 
 /* show elm */
+export const showCompanyModal = ({ showModal, formatDate, jsonListResult }) => {
+  const modalTemplateElm = document.querySelector('#modalTemplate')
+  const modalElm = modalTemplateElm.cloneNode(true)
+
+  const modalTitleElm = modalElm.querySelector('[data-id="modalTitle"]')
+  modalTitleElm.innerText = '検索結果'
+
+  jsonListResult.result.jsonList.forEach((row) => {
+    const cardElm = document.querySelector('[data-template-id="cardTemplate"]').cloneNode(true)
+    const dateFormatted = formatDate({ date: new Date(row.dateUpdated) })
+    cardElm.classList.remove('hidden')
+    cardElm.querySelector('[data-template-id="cardTemplateTitle"]').innerText = row.jsonPath
+    cardElm.querySelector('[data-template-id="cardTemplateText"]').innerText = `更新日時: ${dateFormatted}`
+    cardElm.href = `company?companyName=${row.jsonPath}`
+    modalElm.querySelector('[data-id="modalContent"]').appendChild(cardElm)
+  })
+
+  showModal(modalElm)
+}
+
 export const showMessage = ({ messageResult }) => {
   if (!messageResult || !messageResult.result) {
     return

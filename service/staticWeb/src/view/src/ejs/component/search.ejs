@@ -19,7 +19,7 @@ function searchData () {
   return {
     companyName: '',
     async searchCompany() {
-      const jsonListResult = a.input.fetchJsonList(argNamed({
+      const jsonListResult = await a.input.fetchJsonList(argNamed({
         browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
         lib: [a.lib.common.input.getRequest],
         param: { companyName: this.companyName },
@@ -27,6 +27,11 @@ function searchData () {
 
       // :TODO show modal and link
       console.log({ debug: true, jsonListResult })
+
+      a.output.showCompanyModal(argNamed({
+        param: { jsonListResult },
+        lib: [a.lib.xdevkit.output.showModal, a.lib.xdevkit.lib.formatDate],
+      }))
       return false
     }
   }
