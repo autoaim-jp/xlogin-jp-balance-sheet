@@ -6,11 +6,5 @@ export const getOnClickSaveMessageButton = ({ getMessageValue, parseMessage, sav
   }
 }
 
-export const getOnClickDeleteMessageButton = ({ deleteMessage }) => {
-  return () => {
-    deleteMessage()
-  }
-}
-
 export default {}
 

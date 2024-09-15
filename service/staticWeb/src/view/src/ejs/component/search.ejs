@@ -1,0 +1,28 @@
+<div id='searchGraphTabContainer' class='hidden' x-data="searchData">
+  <h5 class='block mb-2 text-sm text-center'>グラフを検索</h5>
+
+  <div id='searchGraphJsonPermissionRequestContainer' class='flex justify-center hidden'>
+    <button id='filePermissionRequestBtn' data-id='xloginLoginBtn' data-permission='rw:$CLIENT_ID:json_v1' class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>XLogin</button>
+  </div>
+  <div id='searchGraphContainer' class='hidden'>
+    <form class="w-full max-w-xs mx-auto" @submit.prevent='searchCompany' action='#'>
+      <input x-model='searchCompanyInputValue' id='searchCompanyInput' type="text" placeholder="企業名" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50" />
+      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        検索
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+function searchData () {
+  return {
+    searchCompanyInputValue: '',
+    searchCompany() {
+      alert(this.searchCompanyInputValue)
+      return false
+    }
+  }
+}
+</script>
+

@@ -9,14 +9,6 @@ export const getSaveMessage = ({ apiEndpoint, postRequest }) => {
   }
 }
 
-export const getDeleteMessage = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/company/delete`
-  return () => {
-    const param = {}
-    return postRequest(url, param)
-  }
-}
-
 export const getSaveBackupEmailAddress = ({ apiEndpoint, postRequest }) => {
   const url = `${apiEndpoint}/backupEmailAddress/save`
   return () => {
@@ -52,14 +44,6 @@ export const setOnClickSaveMessageButton = ({ onClickSaveMessageButton }) => {
   saveMessageBtn.onclick = (e) => {
     e.preventDefault()
     onClickSaveMessageButton()
-  }
-}
-
-export const setOnClickDeleteMessageButton = ({ onClickDeleteMessageButton }) => {
-  const deleteMessageBtn = document.querySelector('#deleteMessageBtn')
-  deleteMessageBtn.onclick = (e) => {
-    e.preventDefault()
-    onClickDeleteMessageButton()
   }
 }
 
@@ -116,6 +100,15 @@ export const showEditor = ({ splitPermissionListResult }) => {
     document.querySelector('#editorContainer').classList.remove('hidden')
   } else {
     document.querySelector('#filePermissionRequestContainer').classList.remove('hidden')
+  }
+}
+
+export const showSearchForm = ({ splitPermissionListResult }) => {
+  const { splitPermissionList, clientId } = splitPermissionListResult.result
+  if (splitPermissionList.optional[`rw:${clientId}:json_v1`]) {
+    document.querySelector('#searchGraphContainer').classList.remove('hidden')
+  } else {
+    document.querySelector('#searchGraphJsonPermissionRequestContainer').classList.remove('hidden')
   }
 }
 

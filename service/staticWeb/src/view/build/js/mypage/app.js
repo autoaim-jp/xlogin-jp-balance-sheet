@@ -42,17 +42,6 @@ const loadMessageBtn = () => {
   a.output.setOnClickSaveMessageButton(argNamed({
     onClick: { onClickSaveMessageButton },
   }))
-
-  const deleteMessage = a.output.getDeleteMessage(argNamed({
-    browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
-    lib: [a.lib.common.output.postRequest],
-  }))
-  const onClickDeleteMessageButton = a.action.getOnClickDeleteMessageButton(argNamed({
-    output: { deleteMessage },
-  }))
-  a.output.setOnClickDeleteMessageButton(argNamed({
-    onClick: { onClickDeleteMessageButton },
-  }))
 }
 
 const loadPermission = async () => {
@@ -60,13 +49,16 @@ const loadPermission = async () => {
   a.output.showEditor(argNamed({
     param: { splitPermissionListResult },
   }))
-
+  a.output.showSearchForm(argNamed({
+    param: { splitPermissionListResult },
+  }))
   a.lib.xdevkit.output.reloadXloginLoginBtn(splitPermissionListResult?.result?.clientId)
 }
 
 const loadTabBtn = async () => {
   const tabList = {
-    editorTabContainer: 'エディタ',
+    editorTabContainer: 'グラフの追加',
+    searchGraphTabContainer: '検索',
   }
   const activeTabContainerId = Object.keys(tabList)[0]
 
