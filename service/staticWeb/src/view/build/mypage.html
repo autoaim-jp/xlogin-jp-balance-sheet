@@ -367,7 +367,7 @@ function navSidemenuData () {
   </div>
   <div id='searchGraphContainer' class='hidden'>
     <form class="w-full max-w-xs mx-auto" @submit.prevent='searchCompany' action='#'>
-      <input x-model='searchCompanyInputValue' id='searchCompanyInput' type="text" placeholder="企業名" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50" />
+      <input x-model='companyName' id='searchCompanyInput' type="text" placeholder="企業名" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50" />
       <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         検索
       </button>
@@ -378,9 +378,16 @@ function navSidemenuData () {
 <script>
 function searchData () {
   return {
-    searchCompanyInputValue: '',
-    searchCompany() {
-      alert(this.searchCompanyInputValue)
+    companyName: '',
+    async searchCompany() {
+      const jsonListResult = a.input.fetchJsonList(argNamed({
+        browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
+        lib: [a.lib.common.input.getRequest],
+        param: { companyName: this.companyName },
+      }))
+
+      // :TODO show modal and link
+      console.log({ debug: true, jsonListResult })
       return false
     }
   }

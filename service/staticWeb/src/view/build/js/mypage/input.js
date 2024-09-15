@@ -15,5 +15,12 @@ export const fetchMessage = ({ apiEndpoint, getRequest }) => {
   return getRequest(url)
 }
 
+export const fetchJsonList = ({ apiEndpoint, getRequest, companyName }) => {
+  const url = `${apiEndpoint}/company/list`
+  const param = { companyName }
+  return getRequest(url, param)
+}
+
+
 export default {}
 
