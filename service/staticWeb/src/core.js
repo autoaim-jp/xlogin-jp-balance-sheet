@@ -31,24 +31,48 @@ const handleCompanySave = async ({ accessToken, company }) => {
   return handleResult
 }
 
-const handleCompanyContent = async ({ accessToken }) => {
-  const fileGetResponse = await mod.input.fileGetRequest(argNamed({
-    param: { accessToken },
+const handleCompanyList = async ({ accessToken, companyName }) => {
+  const jsonListResponse = await mod.input.jsonListRequest(argNamed({
+    param: { accessToken, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
     setting: mod.setting.getList('user.COMPANY_FILE_PATH'),
     lib: [mod.lib.getRequest],
   }))
 
-  logger.debug('handleCompanyContent', { data: fileGetResponse.data })
+  logger.debug('handleCompanyList', { data: jsonListResponse.data })
 
-  if (!fileGetResponse || !fileGetResponse.data) {
+  if (!jsonListResponse || !jsonListResponse.data) {
     const status = mod.setting.browserServerSetting.getValue('statusList.INVALID_SESSION')
     const result = {}
     const handleResult = { response: { status, result } }
     return handleResult
   }
 
-  const { result } = fileGetResponse.data
+  const { result } = jsonListResponse.data
+  const status = mod.setting.browserServerSetting.getValue('statusList.OK')
+  const handleResult = { response: { status, result } }
+  return handleResult
+}
+
+
+const handleCompanyContent = async ({ accessToken }) => {
+  const jsonGetResponse = await mod.input.jsonGetRequest(argNamed({
+    param: { accessToken },
+    xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
+    setting: mod.setting.getList('user.COMPANY_FILE_PATH'),
+    lib: [mod.lib.getRequest],
+  }))
+
+  logger.debug('handleCompanyContent', { data: jsonGetResponse.data })
+
+  if (!jsonGetResponse || !jsonGetResponse.data) {
+    const status = mod.setting.browserServerSetting.getValue('statusList.INVALID_SESSION')
+    const result = {}
+    const handleResult = { response: { status, result } }
+    return handleResult
+  }
+
+  const { result } = jsonGetResponse.data
   const status = mod.setting.browserServerSetting.getValue('statusList.OK')
   const handleResult = { response: { status, result } }
   return handleResult
@@ -123,6 +147,7 @@ export default {
 
   handleCompanySave,
   handleCompanyContent,
+  handleCompanyList,
   handleCompanyDelete,
   handleSplitPermissionList,
 

@@ -51,6 +51,11 @@ const _getActionRouter = () => {
   }))
   expressRouter.post(`${setting.browserServerSetting.getValue('apiEndpoint')}/company/save`, companySaveHandler)
 
+  const companyListHandler = a.action.getHandlerCompanyList(argNamed({
+    core: [a.core.handleCompanyList, a.core.createResponse],
+  }))
+  expressRouter.get(`${setting.browserServerSetting.getValue('apiEndpoint')}/company/list`, companyListHandler)
+
   const companyContentHandler = a.action.getHandlerCompanyContent(argNamed({
     core: [a.core.handleCompanyContent, a.core.createResponse],
   }))

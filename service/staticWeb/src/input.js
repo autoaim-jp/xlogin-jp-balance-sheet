@@ -9,7 +9,7 @@ const notificationListRequest = async ({
   return getRequest(CLIENT_ID, accessToken, origin, path, param)
 }
 
-const fileGetRequest = async ({
+const jsonGetRequest = async ({
   accessToken, COMPANY_FILE_PATH, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, getRequest,
 }) => {
   const origin = API_SERVER_ORIGIN
@@ -20,6 +20,19 @@ const fileGetRequest = async ({
   }
   return getRequest(CLIENT_ID, accessToken, origin, path, param)
 }
+
+const jsonListRequest = async ({
+  accessToken, companyName, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, getRequest,
+}) => {
+  const origin = API_SERVER_ORIGIN
+  const path = `/api/${API_VERSION}/json/list`
+  const param = {
+    owner: CLIENT_ID,
+    jsonPath: companyName,
+  }
+  return getRequest(CLIENT_ID, accessToken, origin, path, param)
+}
+
 
 const fileListRequest = async ({
   accessToken, fileDir, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, getRequest,
@@ -49,7 +62,8 @@ const fileContentRequest = async ({
 
 export default {
   notificationListRequest,
-  fileGetRequest,
+  jsonGetRequest,
+  jsonListRequest,
   fileListRequest,
   fileContentRequest,
 }

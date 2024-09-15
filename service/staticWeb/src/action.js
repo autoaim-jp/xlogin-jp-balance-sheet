@@ -11,6 +11,17 @@ const getHandlerCompanySave = ({ handleCompanySave, createResponse }) => {
   }
 }
 
+const getHandlerCompanyList = ({ handleCompanyList, createResponse }) => {
+  return async (req, res) => {
+    const { accessToken } = req.session.auth
+    const { companyName } = req.query
+
+    const handleResult = await handleCompanyList({ accessToken, companyName })
+
+    createResponse({ req, res, handleResult })
+  }
+}
+
 const getHandlerCompanyContent = ({ handleCompanyContent, createResponse }) => {
   return async (req, res) => {
     const { accessToken } = req.session.auth
@@ -48,6 +59,7 @@ const getHandlerSplitPermissionList = ({ handleInvalidSession, handleSplitPermis
 export default {
   getHandlerCompanySave,
   getHandlerCompanyContent,
+  getHandlerCompanyList,
   getHandlerCompanyDelete,
 
   getHandlerSplitPermissionList,
