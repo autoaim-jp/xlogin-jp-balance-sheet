@@ -8,9 +8,6 @@ setting.server = {}
 setting.server.PUBLIC_BUILD_DIR = 'view/build'
 setting.server.PUBLIC_STATIC_DIR = 'view/static'
 
-setting.user = {}
-setting.user.COMPANY_FILE_PATH = '/company.txt'
-
 setting.xdevkitSetting = xdevkitSetting
 setting.browserServerSetting = browserServerSetting
 

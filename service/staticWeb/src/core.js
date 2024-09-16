@@ -15,11 +15,11 @@ const init = (setting, output, input, lib) => {
 }
 
 
-const handleCompanySave = async ({ accessToken, company }) => {
+const handleCompanySave = async ({ accessToken, companyName, originalData, parsedData, typeId }) => {
+  const companyData = { originalData, parsedData, typeId }
   const fileSaveResponse = await mod.output.fileSaveRequest(argNamed({
-    param: { accessToken, company },
+    param: { accessToken, companyData, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
-    setting: mod.setting.getList('user.COMPANY_FILE_PATH'),
     lib: [mod.lib.postRequest],
   }))
 
@@ -35,7 +35,6 @@ const handleCompanyList = async ({ accessToken, companyName }) => {
   const jsonListResponse = await mod.input.jsonListRequest(argNamed({
     param: { accessToken, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
-    setting: mod.setting.getList('user.COMPANY_FILE_PATH'),
     lib: [mod.lib.getRequest],
   }))
 
@@ -55,11 +54,10 @@ const handleCompanyList = async ({ accessToken, companyName }) => {
 }
 
 
-const handleCompanyContent = async ({ accessToken }) => {
+const handleCompanyContent = async ({ accessToken, companyName }) => {
   const jsonGetResponse = await mod.input.jsonGetRequest(argNamed({
-    param: { accessToken },
+    param: { accessToken, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
-    setting: mod.setting.getList('user.COMPANY_FILE_PATH'),
     lib: [mod.lib.getRequest],
   }))
 
@@ -80,9 +78,8 @@ const handleCompanyContent = async ({ accessToken }) => {
 
 const handleCompanyDelete = async ({ accessToken }) => {
   const fileDeleteResponse = await mod.output.fileDeleteRequest(argNamed({
-    param: { accessToken },
+    param: { accessToken, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
-    setting: mod.setting.getList('user.COMPANY_FILE_PATH'),
     lib: [mod.lib.postRequest],
   }))
 

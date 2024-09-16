@@ -3,9 +3,9 @@
 const getHandlerCompanySave = ({ handleCompanySave, createResponse }) => {
   return async (req, res) => {
     const { accessToken } = req.session.auth
-    const { company } = req.body
+    const { companyName, originalData, parsedData, typeId } = req.body
 
-    const handleResult = await handleCompanySave({ accessToken, company })
+    const handleResult = await handleCompanySave({ accessToken, companyName, originalData, parsedData, typeId })
 
     createResponse({ req, res, handleResult })
   }
