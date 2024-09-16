@@ -1,12 +1,13 @@
 /* /lib.js */
 const mod = {}
 
-const init = (axios, http, https, crypto, winston) => {
+const init = (axios, http, https, crypto, winston, ulid) => {
   mod.crypto = crypto
   mod.http = http
   mod.https = https
   mod.axios = axios
   mod.winston = winston
+  mod.ulid = ulid
 }
 
 const objToQuery = (obj) => {
@@ -224,6 +225,10 @@ const _createGlobalLogger = ({ SERVICE_NAME }) => {
   return logger
 }
 
+const getUlid = () => {
+  return mod.ulid()
+}
+
 
 /**
  * グローバルの関数をセットする。
@@ -245,6 +250,8 @@ export default {
 
   getFileRequest,
   postFormRequest,
+
+  getUlid,
 
   monkeyPatch,
 }

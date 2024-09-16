@@ -8,6 +8,7 @@ import bodyParser from 'body-parser'
 import helmet from 'helmet'
 import dotenv from 'dotenv'
 import winston from 'winston'
+import { ulid } from 'ulid'
 
 import xdevkit from './xdevkit-auth-router/src/app.js'
 import setting from './setting/index.js'
@@ -93,7 +94,7 @@ const _startServer = (expressApp) => {
 
 const main = () => {
   dotenv.config()
-  lib.init(axios, http, https, crypto, winston)
+  lib.init(axios, http, https, crypto, winston, ulid)
   setting.init(process.env)
   core.init(setting, output, input, lib)
   a.lib.monkeyPatch({ SERVICE_NAME: a.setting.getValue('env.SERVICE_NAME') })
