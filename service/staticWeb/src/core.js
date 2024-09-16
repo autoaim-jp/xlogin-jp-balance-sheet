@@ -19,6 +19,7 @@ const handleCompanySave = async ({ accessToken, companyName, originalData, parse
   const companyData = {
     [graphId]: { originalData, parsedData, typeId }
   }
+  console.log({ companyData })
   const fileSaveResponse = await mod.output.fileSaveRequest(argNamed({
     param: { accessToken, companyData, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),

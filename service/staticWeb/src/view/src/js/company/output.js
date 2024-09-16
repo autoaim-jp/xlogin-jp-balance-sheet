@@ -1,9 +1,9 @@
 /* create elm */
 
 /* request */
-export const saveNewCompany = ({ apiEndpoint, postRequest, companyName, originalData, parsedData, typeId }) => {
+export const saveNewCompany = ({ apiEndpoint, postRequest, companyName, graphData, graphType }) => {
   const url = `${apiEndpoint}/company/save`
-  const param = { companyName, originalData, parsedData, typeId }
+  const param = { companyName, graphData, graphType }
   return postRequest(url, param)
 }
 

@@ -25,8 +25,9 @@ const getHandlerCompanyList = ({ handleCompanyList, createResponse }) => {
 const getHandlerCompanyContent = ({ handleCompanyContent, createResponse }) => {
   return async (req, res) => {
     const { accessToken } = req.session.auth
+    const { companyName } = req.query
 
-    const handleResult = await handleCompanyContent({ accessToken })
+    const handleResult = await handleCompanyContent({ accessToken, companyName })
 
     createResponse({ req, res, handleResult })
   }

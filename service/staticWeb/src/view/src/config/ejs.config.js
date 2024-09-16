@@ -38,7 +38,7 @@ const ejsConfig = {
 
     inlineCssList: [],
     externalCssList: ['/css/tailwind.css'],
-    inlineScriptList: ['/js/mypage/app.js', '/js/_lib/_chartjs/chart.js', '/js/_lib/_alpinejs/dist/cdn.min.js'],
+    inlineScriptList: ['/js/company/app.js', '/js/_lib/_chartjs/chart.js', '/js/_lib/_alpinejs/dist/cdn.min.js'],
     externalScriptList: [],
   },
  
@@ -50,7 +50,7 @@ const ejsConfig = {
 
     inlineCssList: [],
     externalCssList: ['/css/tailwind.css'],
-    inlineScriptList: ['/js/mypage/app.js', '/js/_lib/_chartjs/chart.js', '/js/_lib/_alpinejs/dist/cdn.min.js'],
+    inlineScriptList: ['/js/mypage/app.js', '/js/_lib/_alpinejs/dist/cdn.min.js'],
     externalScriptList: [],
   },
   error: {

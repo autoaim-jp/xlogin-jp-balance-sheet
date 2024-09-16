@@ -7,92 +7,87 @@
 function chartData() {
   return {
     async showChart () {
+      let companyName = ''
+      for (const [key, value] of new URLSearchParams(window.location.search.slice(1))) {
+        if (key === 'companyName') {
+          companyName = value
+        }
+      }
       const messageResult = await a.input.fetchMessage(argNamed({
+        param: { companyName },
         browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
         lib: [a.lib.common.input.getRequest],
       }))
-      const companyJson = messageResult?.result?.jsonContent
-      console.log({ companyJson })
-      const transpose = a => a[0].map((_, c) => a.map(r => r[c]))
-      const companyJsonParsed = companyJson.split('\n').map((row) => {
-        return row.split('\t').map((val) => { return val.trim().replace(/,/g, '') })
-      })
- 
-      console.log({ companyJsonParsed })
+      const companyJsonList = messageResult?.result?.jsonContent
+      Object.entries(companyJsonList).forEach(([graphLabel, companyJson]) => {
+        console.log({ graphLabel, companyJson })
+        const transpose = a => a[0].map((_, c) => a.map(r => r[c]))
+        const companyJsonParsed = companyJson.split('\n').map((row) => {
+          return row.split('\t').map((val) => { return val.trim().replace(/,/g, '') })
+        })
 
-      const datasetLabelList = companyJsonParsed.splice(0, 1)[0]
-      const dataListList = transpose(companyJsonParsed.slice())
-      const labelList = dataListList.splice(0, 1)[0]
+        console.log({ companyJsonParsed })
 
-      // 発表日を削除
-      datasetLabelList.splice(datasetLabelList.length - 1)
-      dataListList.splice(dataListList.length - 1)
+        const datasetLabelList = companyJsonParsed.splice(0, 1)[0]
+        const dataListList = transpose(companyJsonParsed.slice())
+        const labelList = dataListList.splice(0, 1)[0]
 
-      // 修正一株利益を削除
-      datasetLabelList.splice(datasetLabelList.length - 2, 1)
-      dataListList.splice(dataListList.length - 2, 1)
+        // 発表日を削除
+        datasetLabelList.splice(datasetLabelList.length - 1)
+        dataListList.splice(dataListList.length - 1)
 
-      // 決算期を削除
-      datasetLabelList.splice(0, 1)
+        // 修正一株利益を削除
+        datasetLabelList.splice(datasetLabelList.length - 2, 1)
+        dataListList.splice(dataListList.length - 2, 1)
 
-      console.log({ datasetLabelList, labelList, dataListList })
+        // 決算期を削除
+        datasetLabelList.splice(0, 1)
 
-      const datasetList = Object.entries(datasetLabelList).map(([i, datasetLabel]) => {
-        let yAxisID = 'leftAxis'
-        if (i === '4') {
-          yAxisID = 'rightAxis'
-        }
-        return {
-          label: datasetLabel,
-          data: dataListList[i],
-          yAxisID,
-        }
-      })
-      console.log({ datasetList })
+        console.log({ datasetLabelList, labelList, dataListList })
 
-      const ctx = document.getElementById('myChart');
-
-      const data = {
-        labels: labelList,
-        datasets: datasetList,
-        /*
-        [
-          {
-            label: 'Dataset 1',
-            data: dataList1,
-            borderColor: '#ff0000',
-          },
-          {
-            label: 'Dataset 2',
-            data: dataList2,
-            borderColor: '#0000ff',
+        const datasetList = Object.entries(datasetLabelList).map(([i, datasetLabel]) => {
+          let yAxisID = 'leftAxis'
+          if (i === '4') {
+            yAxisID = 'rightAxis'
           }
-        ]
-        */
-      }
+          return {
+            label: datasetLabel,
+            data: dataListList[i],
+            yAxisID,
+          }
+        })
+        console.log({ datasetList })
 
-      new Chart(ctx, {
-        type: 'line',
-        data,
-        options: {
-          scales: {
-            leftAxis: {
-              type: 'linear',
-              display: true,
-              position: 'left',
-            },
-            rightAxis: {
-              type: 'linear',
-              display: true,
-              position: 'right',
+        const ctx = document.getElementById('myChart');
 
-              grid: {
-                drawOnChartArea: false, // only want the grid lines for one axis to show up
+        const data = {
+          labels: labelList,
+          datasets: datasetList,
+        }
+
+        new Chart(ctx, {
+          type: 'line',
+          data,
+          options: {
+            scales: {
+              leftAxis: {
+                type: 'linear',
+                display: true,
+                position: 'left',
               },
-            },
+              rightAxis: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+
+                grid: {
+                  drawOnChartArea: false, // only want the grid lines for one axis to show up
+                },
+              },
+            }
           }
-        }
-      });
+        });
+      })
     }
   }
 }
