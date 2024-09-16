@@ -17,9 +17,9 @@ export const parseMessage = ({ message }) => {
   const messageList = message.split('\n')
 
   if (messageList[0] === '決算期\t売上高\t営業益\t経常益\t最終益\t修正1株益\t売上営業') {
-    return _parseQuarterlyFinancialResults({ message })
+    return Object.assign({ typeId: 1 }, _parseQuarterlyFinancialResults({ message }))
   }
-  return { parsedMessage: 'error at parseMessage' }
+  return { typeId: -1, parsedMessage: 'error at parseMessage' }
 }
 
 export default {}

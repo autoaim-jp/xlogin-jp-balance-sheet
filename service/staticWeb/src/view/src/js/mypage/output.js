@@ -1,34 +1,11 @@
 /* create elm */
 
 /* request */
-export const getSaveMessage = ({ apiEndpoint, postRequest }) => {
+export const saveNewCompany = ({ apiEndpoint, postRequest, companyName, graphData, graphType }) => {
   const url = `${apiEndpoint}/company/save`
-  return ({ parsedMessage }) => {
-    const param = { company: parsedMessage }
-    return postRequest(url, param)
-  }
+  const param = { companyName, graphData, graphType }
+  return postRequest(url, param)
 }
-
-export const getSaveBackupEmailAddress = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/backupEmailAddress/save`
-  return () => {
-    const backupEmailAddressInputElm = document.querySelector('#backupEmailAddressInput')
-    const param = { backupEmailAddress: backupEmailAddressInputElm.value }
-    return postRequest(url, param)
-  }
-}
-
-export const getUploadFile = ({ apiEndpoint, postFormRequest }) => {
-  const url = `${apiEndpoint}/form/save`
-  return () => {
-    const profileImageInputElm = document.querySelector('#profileImageInput')
-    const file = profileImageInputElm.files[0]
-    const formData = new FormData()
-    formData.append('file', file)
-    return postFormRequest(url, formData)
-  }
-}
-
 
 /* onClick */
 export const setOnClickAddTimerButton = ({ onClickAddTimerButton }) => {

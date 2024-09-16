@@ -29,21 +29,6 @@ const loadMessageContent = async () => {
   }))
 }
 
-const loadMessageBtn = () => {
-  const saveMessage = a.output.getSaveMessage(argNamed({
-    browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
-    lib: [a.lib.common.output.postRequest],
-  }))
-  const onClickSaveMessageButton = a.action.getOnClickSaveMessageButton(argNamed({
-    input: [a.input.getMessageValue],
-    core: [a.core.parseMessage],
-    output: { saveMessage },
-  }))
-  a.output.setOnClickSaveMessageButton(argNamed({
-    onClick: { onClickSaveMessageButton },
-  }))
-}
-
 const loadPermission = async () => {
   const splitPermissionListResult = await a.lib.common.input.fetchSplitPermissionList(a.setting.browserServerSetting.getValue('apiEndpoint'))
   a.output.showEditor(argNamed({
@@ -73,7 +58,6 @@ const main = async () => {
   a.lib.monkeyPatch()
 
   a.app.loadMessageContent()
-  a.app.loadMessageBtn()
   a.app.loadTabBtn()
 
   a.app.loadPermission()
@@ -86,7 +70,6 @@ const main = async () => {
 a.app = {
   main,
   loadMessageContent,
-  loadMessageBtn,
   loadPermission,
   loadTabBtn,
 }
