@@ -18,6 +18,7 @@ asocial.lib = lib
 /* a is an alias of asocial */
 const a = asocial
 
+/*
 const loadMessageContent = async () => {
   const messageResult = await a.input.fetchMessage(argNamed({
     browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
@@ -28,6 +29,7 @@ const loadMessageContent = async () => {
     param: { messageResult },
   }))
 }
+  */
 
 const loadPermission = async () => {
   const splitPermissionListResult = await a.lib.common.input.fetchSplitPermissionList(a.setting.browserServerSetting.getValue('apiEndpoint'))
@@ -57,7 +59,7 @@ const main = async () => {
   a.lib.xdevkit.output.switchLoading(true)
   a.lib.monkeyPatch()
 
-  a.app.loadMessageContent()
+  // a.app.loadMessageContent()
   a.app.loadTabBtn()
 
   a.app.loadPermission()
@@ -69,7 +71,6 @@ const main = async () => {
 
 a.app = {
   main,
-  loadMessageContent,
   loadPermission,
   loadTabBtn,
 }
