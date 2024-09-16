@@ -71,7 +71,7 @@ export const showCompanyModal = ({ showModal, formatDate, jsonListResult }) => {
   const modalTitleElm = modalElm.querySelector('[data-id="modalTitle"]')
   modalTitleElm.innerText = '検索結果'
 
-  if (!jsonListResult.result.jsonListResult) {
+  if (!jsonListResult.result.jsonList || jsonListResult.result.jsonList.length === 0) {
     const textElm = document.createElement('p')
     textElm.innerText = '該当する企業が見つかりません。'
     modalElm.querySelector('[data-id="modalContent"]').appendChild(textElm)

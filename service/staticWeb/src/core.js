@@ -17,8 +17,9 @@ const init = (setting, output, input, lib) => {
 
 const handleCompanySave = async ({ accessToken, companyName, originalData, parsedData, typeId }) => {
   const companyData = { originalData, parsedData, typeId }
+  const encodedCompanyName = encodeURIComponent(companyName)
   const fileSaveResponse = await mod.output.fileSaveRequest(argNamed({
-    param: { accessToken, companyData, companyName },
+    param: { accessToken, companyData, companyName: encodedCompanyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
     lib: [mod.lib.postRequest],
   }))
@@ -32,8 +33,9 @@ const handleCompanySave = async ({ accessToken, companyName, originalData, parse
 }
 
 const handleCompanyList = async ({ accessToken, companyName }) => {
+  const encodedCompanyName = encodeURIComponent(companyName)
   const jsonListResponse = await mod.input.jsonListRequest(argNamed({
-    param: { accessToken, companyName },
+    param: { accessToken, companyName: encodedCompanyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
     lib: [mod.lib.getRequest],
   }))
@@ -55,6 +57,7 @@ const handleCompanyList = async ({ accessToken, companyName }) => {
 
 
 const handleCompanyContent = async ({ accessToken, companyName }) => {
+  // const encodedCompanyName = encodeURIComponent(companyName)
   const jsonGetResponse = await mod.input.jsonGetRequest(argNamed({
     param: { accessToken, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
