@@ -2,15 +2,36 @@
 
 export const _ = {}
 
+const _transpose = a => a[0].map((_, c) => a.map(r => r[c]))
+
 const _parseQuarterlyFinancialResults = ({ message }) => {
-  let parsedMessage = message.replace(/売上営業\n損益率/, '売上営業損益率')
-  parsedMessage = parsedMessage.replace(/△.*\n/, '')
-  parsedMessage = parsedMessage.replace(/前年同期比.*\n/, '')
-  parsedMessage = parsedMessage.replace(/▽.*/, '')
+  let filteredMessage = message.replace(/売上営業\n損益率/, '売上営業損益率')
+  filteredMessage = filteredMessage.replace(/△.*\n/, '')
+  filteredMessage = filteredMessage.replace(/前年同期比.*\n/, '')
+  filteredMessage = filteredMessage.replace(/▽.*/, '')
 
-  console.log({ parsedMessage })
+  console.log({ filteredMessage })
 
-  return { parsedMessage }
+  const parsedJson = filteredMessage.split('\n').map((row) => {
+    return row.split('\t').map((val) => { return val.trim().replace(/,/g, '') })
+  })
+
+  const datasetLabelList = parsedJson.splice(0, 1)[0]
+  const dataListList = _transpose(parsedJson.slice())
+  const labelList = dataListList.splice(0, 1)[0]
+
+  // 発表日を削除
+  datasetLabelList.splice(datasetLabelList.length - 1)
+  dataListList.splice(dataListList.length - 1)
+
+  // 修正一株利益を削除
+  datasetLabelList.splice(datasetLabelList.length - 2, 1)
+  dataListList.splice(dataListList.length - 2, 1)
+
+  // 決算期を削除
+  datasetLabelList.splice(0, 1)
+
+  return { parsedMessage: { datasetLabelList, dataListList, labelList } }
 }
 
 export const parseMessage = ({ message }) => {

@@ -21,28 +21,7 @@ function chartData() {
       const companyJsonList = messageResult?.result?.jsonContent
       Object.entries(companyJsonList).forEach(([graphLabel, companyJson]) => {
         console.log({ graphLabel, companyJson })
-        const transpose = a => a[0].map((_, c) => a.map(r => r[c]))
-        const companyJsonParsed = companyJson.split('\n').map((row) => {
-          return row.split('\t').map((val) => { return val.trim().replace(/,/g, '') })
-        })
-
-        console.log({ companyJsonParsed })
-
-        const datasetLabelList = companyJsonParsed.splice(0, 1)[0]
-        const dataListList = transpose(companyJsonParsed.slice())
-        const labelList = dataListList.splice(0, 1)[0]
-
-        // 発表日を削除
-        datasetLabelList.splice(datasetLabelList.length - 1)
-        dataListList.splice(dataListList.length - 1)
-
-        // 修正一株利益を削除
-        datasetLabelList.splice(datasetLabelList.length - 2, 1)
-        dataListList.splice(dataListList.length - 2, 1)
-
-        // 決算期を削除
-        datasetLabelList.splice(0, 1)
-
+        const { datasetLabelList, labelList, dataListList } = companyJson.parsedData
         console.log({ datasetLabelList, labelList, dataListList })
 
         const datasetList = Object.entries(datasetLabelList).map(([i, datasetLabel]) => {
