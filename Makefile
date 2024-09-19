@@ -87,6 +87,7 @@ init-xdevkit:
 	
 	cp -rv ./xdevkit/common/xdevkit-view-component/src/js/_xdevkit ./service/staticWeb/src/view/src/js/_lib/
 	cp -rv ./xdevkit/common/xdevkit-view-component/src/ejs/component ./service/staticWeb/src/view/src/ejs/_xdevkit
+	make lint
 
 # build
 docker-compose-build-app:
