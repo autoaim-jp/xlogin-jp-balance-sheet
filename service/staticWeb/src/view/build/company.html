@@ -309,7 +309,7 @@ function navSidemenuData () {
 </a>
 
 
-  <div class='section1 min-h-80 flex flex-col text-black md:flex items-center justify-center flex-grow p-2'>
+  <div class='section1 flex flex-col text-black md:flex items-center justify-center flex-grow mb-4'>
   <div class='max-w-lg bg-gray-100 p-6 rounded shadow-xl max-w-4xl w-full'>
     <ul class='inline-flex space-x-1 md:space-x-3'>
       
@@ -338,6 +338,122 @@ function navSidemenuData () {
 </div>
 
 
+
+  <div class='section1 flex flex-row text-left text-black md:flex items-center justify-center flex-grow'>
+    <div class='font-bold text-3xl max-w-lg bg-gray-100 p-6 rounded shadow-xl max-w-4xl w-full flex flex-col justify-center'>
+      <p x-data="companyNameData" x-init="loadCompanyName" x-text="companyName"></p>
+
+<script>
+function companyNameData() {
+  return {
+    companyName: '',
+    loadCompanyName () {
+      for (const [key, value] of new URLSearchParams(window.location.search.slice(1))) {
+        if (key === 'companyName') {
+          this.companyName = value
+        }
+      }
+    }
+  }
+}
+</script>
+
+
+    </div>
+  </div>
+
+  <div class='section1 min-h-80 flex flex-row text-left text-black md:flex items-center justify-center flex-grow p-16'>
+    <div class='font-bold text-3xl max-w-lg bg-gray-100 p-6 rounded shadow-xl max-w-4xl w-full flex flex-col justify-center'>
+      <div id='chartWrap' x-data="chartData" x-init="showChart">
+  <div data-template-id="chartTemplate" class='hidden mb-8'></div>
+</div>
+
+
+<script>
+function chartData() {
+  return {
+    async showChart () {
+      let companyName = ''
+      for (const [key, value] of new URLSearchParams(window.location.search.slice(1))) {
+        if (key === 'companyName') {
+          companyName = value
+        }
+      }
+      const messageResult = await a.input.fetchMessage(argNamed({
+        param: { companyName },
+        browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
+        lib: [a.lib.common.input.getRequest],
+      }))
+      const companyJsonList = messageResult?.result?.jsonContent
+      const chartTemplateElm = document.querySelector('[data-template-id="chartTemplate"]')
+      if (!companyJsonList) {
+        const textElm = document.createElement('p')
+        textElm.innerText = 'データがありません。'
+        document.querySelector('#chartWrap').appendChild(textElm)
+        return
+      }
+
+      Object.entries(companyJsonList).forEach(([graphLabel, companyJson]) => {
+        console.log({ graphLabel, companyJson })
+        const { datasetLabelList, labelList, dataListList } = companyJson.parsedData
+        console.log({ datasetLabelList, labelList, dataListList })
+
+        const datasetList = Object.entries(datasetLabelList).map(([i, datasetLabel]) => {
+          let yAxisID = 'leftAxis'
+          if (i === '4') {
+            yAxisID = 'rightAxis'
+          }
+          return {
+            label: datasetLabel,
+            data: dataListList[i],
+            yAxisID,
+          }
+        })
+        console.log({ datasetList })
+
+        const ctxWrapElm = chartTemplateElm.cloneNode(true)
+        ctxWrapElm.classList.remove('hidden')
+        const ctxElm = document.createElement('canvas')
+        ctxWrapElm.appendChild(ctxElm)
+        document.querySelector('#chartWrap').appendChild(ctxWrapElm)
+
+        const data = {
+          labels: labelList,
+          datasets: datasetList,
+        }
+
+        new Chart(ctxElm, {
+          type: 'line',
+          data,
+          options: {
+            scales: {
+              leftAxis: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+              },
+              rightAxis: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+
+                grid: {
+                  drawOnChartArea: false, // only want the grid lines for one axis to show up
+                },
+              },
+            }
+          }
+        });
+      })
+    }
+  }
+}
+
+</script>
+
+
+    </div>
+  </div>
 
   <div class='section1 min-h-80 flex flex-row text-left text-black md:flex items-center justify-center flex-grow p-16'>
     <div class='font-bold text-3xl max-w-lg bg-gray-100 p-6 rounded shadow-xl max-w-4xl w-full flex flex-col justify-center'>
@@ -388,86 +504,7 @@ function editor2Data () {
     </div>
   </div>
  
-  <div class='section1 min-h-80 flex flex-row text-left text-black md:flex items-center justify-center flex-grow p-16'>
-    <div class='font-bold text-3xl max-w-lg bg-gray-100 p-6 rounded shadow-xl max-w-4xl w-full flex flex-col justify-center'>
-      <div>
-  <canvas id="myChart" x-data="chartData" x-init="showChart"></canvas>
-</div>
 
-
-<script>
-function chartData() {
-  return {
-    async showChart () {
-      let companyName = ''
-      for (const [key, value] of new URLSearchParams(window.location.search.slice(1))) {
-        if (key === 'companyName') {
-          companyName = value
-        }
-      }
-      const messageResult = await a.input.fetchMessage(argNamed({
-        param: { companyName },
-        browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
-        lib: [a.lib.common.input.getRequest],
-      }))
-      const companyJsonList = messageResult?.result?.jsonContent
-      Object.entries(companyJsonList).forEach(([graphLabel, companyJson]) => {
-        console.log({ graphLabel, companyJson })
-        const { datasetLabelList, labelList, dataListList } = companyJson.parsedData
-        console.log({ datasetLabelList, labelList, dataListList })
-
-        const datasetList = Object.entries(datasetLabelList).map(([i, datasetLabel]) => {
-          let yAxisID = 'leftAxis'
-          if (i === '4') {
-            yAxisID = 'rightAxis'
-          }
-          return {
-            label: datasetLabel,
-            data: dataListList[i],
-            yAxisID,
-          }
-        })
-        console.log({ datasetList })
-
-        const ctx = document.getElementById('myChart');
-
-        const data = {
-          labels: labelList,
-          datasets: datasetList,
-        }
-
-        new Chart(ctx, {
-          type: 'line',
-          data,
-          options: {
-            scales: {
-              leftAxis: {
-                type: 'linear',
-                display: true,
-                position: 'left',
-              },
-              rightAxis: {
-                type: 'linear',
-                display: true,
-                position: 'right',
-
-                grid: {
-                  drawOnChartArea: false, // only want the grid lines for one axis to show up
-                },
-              },
-            }
-          }
-        });
-      })
-    }
-  }
-}
-
-</script>
-
-
-    </div>
-  </div>
   <footer class="bg-white">
   <div class="mx-auto max-w-screen-xl space-y-8 px-4 py-16 sm:px-6 lg:space-y-16 lg:px-8">
     <div

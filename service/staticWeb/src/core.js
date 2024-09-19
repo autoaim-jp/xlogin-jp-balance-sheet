@@ -15,18 +15,38 @@ const init = (setting, output, input, lib) => {
 }
 
 const handleCompanySave = async ({ accessToken, companyName, originalData, parsedData, typeId }) => {
+  const encodedCompanyName = encodeURIComponent(companyName)
+  const jsonGetResponse = await mod.input.jsonGetRequest(argNamed({
+    param: { accessToken, companyName: encodedCompanyName },
+    xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
+    lib: [mod.lib.getRequest],
+  }))
+
+  logger.debug('handleCompanySave', { handleCompanySave: jsonGetResponse.data })
+
+  if (!jsonGetResponse || !jsonGetResponse.data) {
+    const status = mod.setting.browserServerSetting.getValue('statusList.INVALID_SESSION')
+    const result = {}
+    const handleResult = { response: { status, result } }
+    return handleResult
+  }
+
   const graphId = mod.lib.getUlid()
-  const companyData = {
+  const newCompanyData = {
     [graphId]: { originalData, parsedData, typeId }
   }
-  console.log({ companyData })
+  if (jsonGetResponse.data.result.jsonContent) {
+    Object.assign(newCompanyData, jsonGetResponse.data.result.jsonContent)
+  }
+
+  console.log({ newCompanyData })
   const fileSaveResponse = await mod.output.fileSaveRequest(argNamed({
-    param: { accessToken, companyData, companyName },
+    param: { accessToken, companyData: newCompanyData, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
     lib: [mod.lib.postRequest],
   }))
 
-  logger.debug('handleCompanySave', { fileSaveResponse })
+  logger.debug('handleCompanySave', { fileSaveResponse: fileSaveResponse.data })
 
   const status = mod.setting.browserServerSetting.getValue('statusList.OK')
 

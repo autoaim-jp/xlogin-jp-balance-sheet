@@ -1,0 +1,17 @@
+<p x-data="companyNameData" x-init="loadCompanyName" x-text="companyName"></p>
+
+<script>
+function companyNameData() {
+  return {
+    companyName: '',
+    loadCompanyName () {
+      for (const [key, value] of new URLSearchParams(window.location.search.slice(1))) {
+        if (key === 'companyName') {
+          this.companyName = value
+        }
+      }
+    }
+  }
+}
+</script>
+
