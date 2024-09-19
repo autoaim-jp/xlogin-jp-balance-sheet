@@ -41,7 +41,7 @@ const ejsConfig = {
     inlineScriptList: ['/js/company/app.js', '/js/_lib/_chartjs/chart.js', '/js/_lib/_alpinejs/dist/cdn.min.js'],
     externalScriptList: [],
   },
- 
+
   mypage: {
     title: 'mypage | sample.xlogin.jp',
     description: 'mypage',

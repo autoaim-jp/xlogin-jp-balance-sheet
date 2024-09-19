@@ -3,9 +3,13 @@
 const getHandlerCompanySave = ({ handleCompanySave, createResponse }) => {
   return async (req, res) => {
     const { accessToken } = req.session.auth
-    const { companyName, originalData, parsedData, typeId } = req.body
+    const {
+      companyName, originalData, parsedData, typeId,
+    } = req.body
 
-    const handleResult = await handleCompanySave({ accessToken, companyName, originalData, parsedData, typeId })
+    const handleResult = await handleCompanySave({
+      accessToken, companyName, originalData, parsedData, typeId,
+    })
 
     createResponse({ req, res, handleResult })
   }
@@ -36,8 +40,9 @@ const getHandlerCompanyContent = ({ handleCompanyContent, createResponse }) => {
 const getHandlerCompanyDelete = ({ handleCompanyDelete, createResponse }) => {
   return async (req, res) => {
     const { accessToken } = req.session.auth
+    const { companyName } = req.query
 
-    const handleResult = await handleCompanyDelete({ accessToken })
+    const handleResult = await handleCompanyDelete({ accessToken, companyName })
 
     createResponse({ req, res, handleResult })
   }

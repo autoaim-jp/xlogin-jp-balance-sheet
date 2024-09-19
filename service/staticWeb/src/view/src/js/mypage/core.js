@@ -1,8 +1,6 @@
 /* mypage/core.js */
 
-export const _ = {}
-
-const _transpose = a => a[0].map((_, c) => a.map(r => r[c]))
+const _transpose = (a) => { return a[0].map((_val, c) => { return a.map((r) => { return r[c] }) }) }
 
 const _parseQuarterlyFinancialResults = ({ message }) => {
   let filteredMessage = message.replace(/売上営業\n損益率/, '売上営業損益率')
@@ -38,7 +36,7 @@ export const parseMessage = ({ message }) => {
   const messageList = message.split('\n')
 
   if (messageList[0] === '決算期\t売上高\t営業益\t経常益\t最終益\t修正1株益\t売上営業') {
-    return Object.assign({ typeId: 1 }, _parseQuarterlyFinancialResults({ message }))
+    return { typeId: 1, ..._parseQuarterlyFinancialResults({ message }) }
   }
   return { typeId: -1, parsedMessage: 'error at parseMessage' }
 }

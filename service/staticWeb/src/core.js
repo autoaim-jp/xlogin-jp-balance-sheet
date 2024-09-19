@@ -14,7 +14,9 @@ const init = (setting, output, input, lib) => {
   mod.lib = lib
 }
 
-const handleCompanySave = async ({ accessToken, companyName, originalData, parsedData, typeId }) => {
+const handleCompanySave = async ({
+  accessToken, companyName, originalData, parsedData, typeId,
+}) => {
   const encodedCompanyName = encodeURIComponent(companyName)
   const jsonGetResponse = await mod.input.jsonGetRequest(argNamed({
     param: { accessToken, companyName: encodedCompanyName },
@@ -33,7 +35,7 @@ const handleCompanySave = async ({ accessToken, companyName, originalData, parse
 
   const graphId = mod.lib.getUlid()
   const newCompanyData = {
-    [graphId]: { originalData, parsedData, typeId }
+    [graphId]: { originalData, parsedData, typeId },
   }
   if (jsonGetResponse.data.result.jsonContent) {
     Object.assign(newCompanyData, jsonGetResponse.data.result.jsonContent)
@@ -101,7 +103,7 @@ const handleCompanyContent = async ({ accessToken, companyName }) => {
   return handleResult
 }
 
-const handleCompanyDelete = async ({ accessToken }) => {
+const handleCompanyDelete = async ({ accessToken, companyName }) => {
   const fileDeleteResponse = await mod.output.fileDeleteRequest(argNamed({
     param: { accessToken, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
