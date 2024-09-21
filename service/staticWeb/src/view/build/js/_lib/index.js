@@ -86,65 +86,77 @@ const _parseQuarterlyFinancialResults = ({ message }) => {
     parsedJson.splice(parsedJson.length - 1)
   }
 
-  const datasetLabelList = parsedJson.splice(0, 1)[0]
+  const legendList = parsedJson.splice(0, 1)[0]
   const dataListList = _transpose(parsedJson.slice())
-  const labelList = dataListList.splice(0, 1)[0]
+  const xAxisLabelList = dataListList.splice(0, 1)[0]
 
   // 発表日を削除
-  datasetLabelList.splice(datasetLabelList.length - 1)
+  legendList.splice(legendList.length - 1)
   dataListList.splice(dataListList.length - 1)
 
   // 修正一株利益を削除
-  datasetLabelList.splice(datasetLabelList.length - 2, 1)
+  legendList.splice(legendList.length - 2, 1)
   dataListList.splice(dataListList.length - 2, 1)
 
   // 決算期を削除
-  datasetLabelList.splice(0, 1)
+  legendList.splice(0, 1)
 
-  console.log({ parsedMessage: { datasetLabelList, dataListList, labelList } })
-  return { parsedMessage: { datasetLabelList, dataListList, labelList } }
+  const yAxisDirectionList = []
+  legendList.forEach((_, i) => { 
+    yAxisDirectionList.push(i === 4? 'r': 'l')
+  })
+  console.log({ parsedMessage: { legendList, dataListList, xAxisLabelList, yAxisDirectionList } })
+  return { parsedMessage: { legendList, dataListList, xAxisLabelList, yAxisDirectionList } }
 }
 
 const _parseCashflowResults = ({ message }) => {
   const messageList  = message.replace(/,/g, '').split('\n')
-  const labelList = []
+  const xAxisLabelList = []
   const _dataListList = []
-  let datasetLabelList = []
+  let legendList = []
   messageList.forEach((row) => {
     const label = row.match(/....年/)
     if (label) {
-      labelList.push(label[0])
+      xAxisLabelList.push(label[0])
     } else if (row.match('月期') || row.match('個') || row.match('Q')) {
     } else if (row.match('年度')) {
-      datasetLabelList = row.split('\t').map((column) => { return column.replace(/#.*/, '') }).filter((column) => { return column !== '年度' && column !== '四半期' })
+      legendList = row.split('\t').map((column) => { return column.replace(/#.*/, '') }).filter((column) => { return column !== '年度' && column !== '四半期' })
     } else if (row.match('通期')?.index === 0) {
       _dataListList.push(row.split('\t').splice(1).map((value) => { return value === '-'? '0': value }))
     }
   })
 
-  if (labelList.length !== _dataListList.length) {
-    labelList.splice(_dataListList.length)
+  if (xAxisLabelList.length !== _dataListList.length) {
+    xAxisLabelList.splice(_dataListList.length)
   }
 
   const dataListList = _transpose(_dataListList)
+  const yAxisDirectionList = []
+  legendList.forEach((_, i) => { 
+    // すべての線は左の軸を使う
+    yAxisDirectionList.push(i === null? 'r': 'l')
+  })
 
-  console.log({ parsedMessage: { datasetLabelList, dataListList, labelList } })
-  return { parsedMessage: { datasetLabelList, dataListList, labelList } }
+  console.log({ parsedMessage: { legendList, dataListList, xAxisLabelList, yAxisDirectionList } })
+  return { parsedMessage: { legendList, dataListList, xAxisLabelList, yAxisDirectionList } }
 }
 
 export const parseMessage = ({ message }) => {
   const messageList = message.split('\n')
+  if (messageList[0].length === 0) {
+    messageList.splice(0, 1)
+  }
   const headerList = messageList[0].split('\t')
 
   /*
-   * datasetLabelList: ['売上高', '営業益', '経常益', '最終益', '売上営業損益率']
-   * labelList: ['22.07-09', '22.10-12', '23.01-03', '23.04-06', '23.07-09', '23.10-12', '24.01-03', '24.04-06']
+   * legendList: ['売上高', '営業益', '経常益', '最終益', '売上営業損益率']
+   * xAxisLabelList: ['22.07-09', '22.10-12', '23.01-03', '23.04-06', '23.07-09', '23.10-12', '24.01-03', '24.04-06']
    * dataListList[['68337', '79768', '58780', '62367', '63708', '75539', '59990', '68204'], [...], ..., [...]]
    */
   if (messageList[0] === '決算期\t売上高\t営業益\t経常益\t最終益\t修正1株益\t売上営業') {
-    return { typeId: 1, ..._parseQuarterlyFinancialResults({ message }) }
+    return { typeId: 1, ..._parseQuarterlyFinancialResults({ message: message.trim() }) }
   } else if (['年度', '四半期', '営業CF', '投資CF', '財務CF', 'フリーCF', '設備投資', '現金等'].every((keyword) => { return headerList.some((header) => { return header.indexOf(keyword) === 0 }) })) {
-    return { typeId: 1, ..._parseCashflowResults({ message }) }
+    return { typeId: 1, ..._parseCashflowResults({ message: message.trim() }) }
   }
  
   return { typeId: -1, parsedMessage: 'error at parseMessage' }

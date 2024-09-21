@@ -31,13 +31,13 @@ function chartData() {
         if (!companyJson || !companyJson.parsedData) {
           return
         }
-        console.log({ graphLabel, companyJson })
-        const { datasetLabelList, labelList, dataListList } = companyJson.parsedData
-        console.log({ datasetLabelList, labelList, dataListList })
+        // console.log({ graphLabel, companyJson })
+        const { legendList, xAxisLabelList, dataListList, yAxisDirectionList, } = companyJson.parsedData
+        // console.log({ legendList, xAxisLabelList, dataListList, yAxisDirectionList })
 
-        const datasetList = Object.entries(datasetLabelList).map(([i, datasetLabel]) => {
+        const datasetList = Object.entries(legendList).map(([i, datasetLabel]) => {
           let yAxisID = 'leftAxis'
-          if (i === '4') {
+          if (yAxisDirectionList[i] === 'r') {
             yAxisID = 'rightAxis'
           }
           return {
@@ -55,7 +55,7 @@ function chartData() {
         document.querySelector('#chartWrap').appendChild(ctxWrapElm)
 
         const data = {
-          labels: labelList,
+          labels: xAxisLabelList,
           datasets: datasetList,
         }
 
