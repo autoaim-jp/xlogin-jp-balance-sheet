@@ -14,6 +14,11 @@ const _parseQuarterlyFinancialResults = ({ message }) => {
     return row.split('\t').map((val) => { return val.trim().replace(/,/g, '') })
   })
 
+  // 最後の行の長さが異なるならば不要
+  if (parsedJson[parsedJson.length - 2].length !== parsedJson[parsedJson.length -1].length) {
+    parsedJson.splice(parsedJson.length - 1)
+  }
+
   const datasetLabelList = parsedJson.splice(0, 1)[0]
   const dataListList = _transpose(parsedJson.slice())
   const labelList = dataListList.splice(0, 1)[0]
@@ -29,6 +34,7 @@ const _parseQuarterlyFinancialResults = ({ message }) => {
   // 決算期を削除
   datasetLabelList.splice(0, 1)
 
+  console.log({ parsedMessage: { datasetLabelList, dataListList, labelList } })
   return { parsedMessage: { datasetLabelList, dataListList, labelList } }
 }
 

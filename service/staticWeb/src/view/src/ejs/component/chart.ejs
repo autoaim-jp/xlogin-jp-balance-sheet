@@ -28,6 +28,9 @@ function chartData() {
       }
 
       Object.entries(companyJsonList).forEach(([graphLabel, companyJson]) => {
+        if (!companyJson || !companyJson.parsedData) {
+          return
+        }
         console.log({ graphLabel, companyJson })
         const { datasetLabelList, labelList, dataListList } = companyJson.parsedData
         console.log({ datasetLabelList, labelList, dataListList })
