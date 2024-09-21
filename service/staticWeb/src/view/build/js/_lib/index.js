@@ -105,12 +105,48 @@ const _parseQuarterlyFinancialResults = ({ message }) => {
   return { parsedMessage: { datasetLabelList, dataListList, labelList } }
 }
 
+const _parseCashflowResults = ({ message }) => {
+  const messageList  = message.replace(/,/g, '').split('\n')
+  const labelList = []
+  const _dataListList = []
+  let datasetLabelList = []
+  messageList.forEach((row) => {
+    const label = row.match(/....年/)
+    if (label) {
+      labelList.push(label[0])
+    } else if (row.match('月期') || row.match('個') || row.match('Q')) {
+    } else if (row.match('年度')) {
+      datasetLabelList = row.split('\t').map((column) => { return column.replace(/#.*/, '') }).filter((column) => { return column !== '年度' && column !== '四半期' })
+    } else if (row.match('通期')?.index === 0) {
+      _dataListList.push(row.split('\t').splice(1).map((value) => { return value === '-'? '0': value }))
+    }
+  })
+
+  if (labelList.length !== _dataListList.length) {
+    labelList.splice(_dataListList.length)
+  }
+
+  const dataListList = _transpose(_dataListList)
+
+  console.log({ parsedMessage: { datasetLabelList, dataListList, labelList } })
+  return { parsedMessage: { datasetLabelList, dataListList, labelList } }
+}
+
 export const parseMessage = ({ message }) => {
   const messageList = message.split('\n')
+  const headerList = messageList[0].split('\t')
 
+  /*
+   * datasetLabelList: ['売上高', '営業益', '経常益', '最終益', '売上営業損益率']
+   * labelList: ['22.07-09', '22.10-12', '23.01-03', '23.04-06', '23.07-09', '23.10-12', '24.01-03', '24.04-06']
+   * dataListList[['68337', '79768', '58780', '62367', '63708', '75539', '59990', '68204'], [...], ..., [...]]
+   */
   if (messageList[0] === '決算期\t売上高\t営業益\t経常益\t最終益\t修正1株益\t売上営業') {
     return { typeId: 1, ..._parseQuarterlyFinancialResults({ message }) }
+  } else if (['年度', '四半期', '営業CF', '投資CF', '財務CF', 'フリーCF', '設備投資', '現金等'].every((keyword) => { return headerList.some((header) => { return header.indexOf(keyword) === 0 }) })) {
+    return { typeId: 1, ..._parseCashflowResults({ message }) }
   }
+ 
   return { typeId: -1, parsedMessage: 'error at parseMessage' }
 }
 
