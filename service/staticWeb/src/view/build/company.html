@@ -463,14 +463,14 @@ function chartData() {
       <div id='tabMenuContainerWrap'class='text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 mb-4'>
       </div>
       <div class='text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700'>
-        <div id='editorTabContainer' class='hidden' x-data="editor2Data">
+        <div id='editorTabContainer' class='hidden' x-data="editor2Data" x-init="loadCompanyName">
   <h5 class='block mb-2 text-sm text-center'>グラフの追加</h5>
 
   <div id='filePermissionRequestContainer' class='flex justify-center hidden'>
     <button id='filePermissionRequestBtn' data-id='xloginLoginBtn' data-permission='rw:$CLIENT_ID:json_v1' class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'>XLogin</button>
   </div>
   <form id='editorContainer' class='hidden' action='#' @submit.prevent='saveCompanyGraph'>
-    <input x-model='companyName' id='searchCompanyInput' type="text" placeholder="企業名" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50" />
+    <input :disabled='isCompanyNameSetByQuery' x-model='companyName' id='searchCompanyInput' type="text" placeholder="企業名" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50" />
     <textarea x-model='originalData' rows='4' class='block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-100 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-4' placeholder='hi everyone!'></textarea>
     <div class='flex justify-between w-full'>
       <button type='submit' class='w-full px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out'>グラフを保存</button>
@@ -484,8 +484,18 @@ function editor2Data () {
     companyName: '',
     originalData: '',
     parsedData: '',
+    isCompanyNameSetByQuery: false,
+    loadCompanyName () {
+      console.log('loadCompanyName')
+      for (const [key, value] of new URLSearchParams(window.location.search.slice(1))) {
+        if (key === 'companyName') {
+          this.companyName = value
+          this.isCompanyNameSetByQuery = true
+        }
+      }
+    },
     async saveCompanyGraph() {
-      const { typeId, parsedMessage: parsedData } = a.core.parseMessage({ message: this.originalData })
+      const { typeId, parsedMessage: parsedData } = a.lib.parseMessage({ message: this.originalData })
       const saveResult = await a.output.saveNewCompany(argNamed({
         browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
         lib: [a.lib.common.output.postRequest],
