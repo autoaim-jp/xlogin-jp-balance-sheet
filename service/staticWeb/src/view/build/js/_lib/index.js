@@ -82,7 +82,7 @@ const _parseQuarterlyFinancialResults = ({ message }) => {
   })
 
   // 最後の行の長さが異なるならば不要
-  if (parsedJson[parsedJson.length - 2].length !== parsedJson[parsedJson.length -1].length) {
+  if (parsedJson[parsedJson.length - 2].length !== parsedJson[parsedJson.length - 1].length) {
     parsedJson.splice(parsedJson.length - 1)
   }
 
@@ -102,15 +102,23 @@ const _parseQuarterlyFinancialResults = ({ message }) => {
   legendList.splice(0, 1)
 
   const yAxisDirectionList = []
-  legendList.forEach((_, i) => { 
-    yAxisDirectionList.push(i === 4? 'r': 'l')
+  legendList.forEach((_, i) => {
+    yAxisDirectionList.push(i === 4 ? 'r' : 'l')
   })
-  console.log({ parsedMessage: { legendList, dataListList, xAxisLabelList, yAxisDirectionList } })
-  return { parsedMessage: { legendList, dataListList, xAxisLabelList, yAxisDirectionList } }
+  console.log({
+    parsedMessage: {
+      legendList, dataListList, xAxisLabelList, yAxisDirectionList,
+    },
+  })
+  return {
+    parsedMessage: {
+      legendList, dataListList, xAxisLabelList, yAxisDirectionList,
+    },
+  }
 }
 
 const _parseCashflowResults = ({ message }) => {
-  const messageList  = message.replace(/,/g, '').split('\n')
+  const messageList = message.replace(/,/g, '').split('\n')
   const xAxisLabelList = []
   const _dataListList = []
   let legendList = []
@@ -118,11 +126,12 @@ const _parseCashflowResults = ({ message }) => {
     const label = row.match(/....年/)
     if (label) {
       xAxisLabelList.push(label[0])
+    /* eslint no-empty: 0 */
     } else if (row.match('月期') || row.match('個') || row.match('Q')) {
     } else if (row.match('年度')) {
       legendList = row.split('\t').map((column) => { return column.replace(/#.*/, '') }).filter((column) => { return column !== '年度' && column !== '四半期' })
     } else if (row.match('通期')?.index === 0) {
-      _dataListList.push(row.split('\t').splice(1).map((value) => { return value === '-'? '0': value }))
+      _dataListList.push(row.split('\t').splice(1).map((value) => { return value === '-' ? '0' : value }))
     }
   })
 
@@ -132,13 +141,21 @@ const _parseCashflowResults = ({ message }) => {
 
   const dataListList = _transpose(_dataListList)
   const yAxisDirectionList = []
-  legendList.forEach((_, i) => { 
+  legendList.forEach((_, i) => {
     // すべての線は左の軸を使う
-    yAxisDirectionList.push(i === null? 'r': 'l')
+    yAxisDirectionList.push(i === null ? 'r' : 'l')
   })
 
-  console.log({ parsedMessage: { legendList, dataListList, xAxisLabelList, yAxisDirectionList } })
-  return { parsedMessage: { legendList, dataListList, xAxisLabelList, yAxisDirectionList } }
+  console.log({
+    parsedMessage: {
+      legendList, dataListList, xAxisLabelList, yAxisDirectionList,
+    },
+  })
+  return {
+    parsedMessage: {
+      legendList, dataListList, xAxisLabelList, yAxisDirectionList,
+    },
+  }
 }
 
 export const parseMessage = ({ message }) => {
@@ -155,11 +172,10 @@ export const parseMessage = ({ message }) => {
    */
   if (messageList[0] === '決算期\t売上高\t営業益\t経常益\t最終益\t修正1株益\t売上営業') {
     return { typeId: 1, ..._parseQuarterlyFinancialResults({ message: message.trim() }) }
-  } else if (['年度', '四半期', '営業CF', '投資CF', '財務CF', 'フリーCF', '設備投資', '現金等'].every((keyword) => { return headerList.some((header) => { return header.indexOf(keyword) === 0 }) })) {
+  } if (['年度', '四半期', '営業CF', '投資CF', '財務CF', 'フリーCF', '設備投資', '現金等'].every((keyword) => { return headerList.some((header) => { return header.indexOf(keyword) === 0 }) })) {
     return { typeId: 1, ..._parseCashflowResults({ message: message.trim() }) }
   }
- 
+
   return { typeId: -1, parsedMessage: 'error at parseMessage' }
 }
-
 
