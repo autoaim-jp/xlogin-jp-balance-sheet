@@ -1,7 +1,6 @@
 import jsonApi from './jsonApi.js'
 
 const apiRequest = (isPost, origin, path, param, header) => {
-  console.log({ isPost, origin, path, param, header })
   if (jsonApi.hasTest(path)) {
     return jsonApi.test(path)(isPost, origin, path, param, header)
   }
