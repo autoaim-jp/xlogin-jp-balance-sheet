@@ -93,7 +93,7 @@ init-xdevkit:
 docker-compose-build-app:
 	docker compose -p ${DOCKER_PROJECT_NAME}-app -f ./app/docker/docker-compose.app.yml build
 docker-compose-build-test:
-	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./docker/docker-compose.test.yml build
+	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./app/docker/docker-compose.test.yml build
 docker-compose-build-view:
 	docker compose -p ${DOCKER_PROJECT_NAME}-view -f ./xdevkit/standalone/xdevkit-view-compiler/docker/docker-compose.view.yml build
 
@@ -103,9 +103,9 @@ docker-compose-up-app:
 docker-compose-up-app-d:
 	docker compose -p ${DOCKER_PROJECT_NAME}-app -f ./app/docker/docker-compose.app.yml up -d
 docker-compose-up-test:
-	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./docker/docker-compose.test.yml down 
-	docker volume rm ${DOCKER_PROJECT_NAME}_xl-client-sample-rc-redis
-	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./docker/docker-compose.test.yml up --abort-on-container-exit
+	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./app/docker/docker-compose.test.yml down 
+	docker volume rm test-${DOCKER_PROJECT_NAME}-rc-redis
+	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./app/docker/docker-compose.test.yml up --abort-on-container-exit
 
 docker-compose-up-view-compile:
 	VIEW_PATH=../../../../service/staticWeb/src/view BUILD_COMMAND="compile" docker compose -p ${DOCKER_PROJECT_NAME}-view -f ./xdevkit/standalone/xdevkit-view-compiler/docker/docker-compose.view.yml up --abort-on-container-exit
@@ -118,7 +118,7 @@ docker-compose-up-view-watch:
 docker-compose-down-app:
 	docker compose -p ${DOCKER_PROJECT_NAME}-app -f ./app/docker/docker-compose.app.yml down --volumes
 docker-compose-down-test:
-	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./docker/docker-compose.test.yml down --volumes
+	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./app/docker/docker-compose.test.yml down --volumes
 
 # devtool
 docker-compose-up-lint:
