@@ -15,7 +15,7 @@ import xdevkit from '../xdevkit-auth-router/src/app.js'
 import setting from './setting/index.js'
 import testLib from './xdevkit-api-test/index.js'
 
-import coreTest from './coreTest.js'
+import * as coreTest from './coreTest.js'
 
 const asocial = {
   setting, output, core, input, lib,
@@ -27,11 +27,14 @@ const test = () => {
   a.lib.getRequest = testLib.getRequest
   a.lib.postRequest = testLib.postRequest
 
-  coreTest.coreTest({ a })
+  coreTest.handleCompanySave({ a })
+  coreTest.handleCompanyList({ a })
+  coreTest.handleCompanyContent({ a })
+  coreTest.handleCompanyDelete({ a })
 }
 
 const main = () => {
-  dotenv.config()
+  dotenv.config({ path: process.env.DOTENV_CONFIG_PATH })
   lib.init(axios, http, https, crypto, winston, ulid)
   setting.init(process.env)
   core.init(setting, output, input, lib)
