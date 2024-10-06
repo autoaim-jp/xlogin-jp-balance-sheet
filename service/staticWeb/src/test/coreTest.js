@@ -7,7 +7,9 @@ export const handleCompanySave = ({ a }) => {
     const typeId = ''
 
     test('pub-20-d-ut-1: success handleCompanySave', async () => {
-      const handleResult = await a.core.handleCompanySave({ accessToken, companyName, originalData, parsedData, typeId })
+      const handleResult = await a.core.handleCompanySave({
+        accessToken, companyName, originalData, parsedData, typeId,
+      })
       expect(handleResult.response.status).toBe(a.setting.browserServerSetting.getValue('statusList.OK'))
     }, 10 * 1000)
   })
@@ -48,5 +50,4 @@ export const handleCompanyDelete = ({ a }) => {
     }, 10 * 1000)
   })
 }
-
 
