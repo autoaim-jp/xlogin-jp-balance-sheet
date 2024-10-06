@@ -43,12 +43,12 @@ const fileSaveRequest = ({
 }
 
 const fileDeleteRequest = ({
-  accessToken, COMPANY_FILE_PATH, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, postRequest,
+  accessToken, companyName, CLIENT_ID, API_VERSION, API_SERVER_ORIGIN, postRequest,
 }) => {
   const path = `/api/${API_VERSION}/json/delete`
   const param = {
     owner: CLIENT_ID,
-    jsonPath: COMPANY_FILE_PATH,
+    jsonPath: companyName,
   }
 
   return postRequest(CLIENT_ID, accessToken, API_SERVER_ORIGIN, path, param)
