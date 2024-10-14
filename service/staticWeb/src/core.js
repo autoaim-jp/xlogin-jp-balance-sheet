@@ -41,7 +41,6 @@ const handleCompanySave = async ({
     Object.assign(newCompanyData, jsonGetResponse.data.result.jsonContent)
   }
 
-  console.log({ newCompanyData })
   const fileSaveResponse = await mod.output.fileSaveRequest(argNamed({
     param: { accessToken, companyData: newCompanyData, companyName },
     xdevkitSetting: mod.setting.xdevkitSetting.getList('api.API_VERSION', 'env.API_SERVER_ORIGIN', 'env.CLIENT_ID'),
