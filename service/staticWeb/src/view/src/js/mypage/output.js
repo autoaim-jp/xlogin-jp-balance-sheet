@@ -1,68 +1,15 @@
 /* create elm */
-export const showUserProfile = ({ userInfoResult, applyElmList }) => {
-  const { userInfo } = userInfoResult
-
-  Object.entries(userInfo?.public || {}).forEach(([key, value]) => {
-    applyElmList(`[data-var='${key}']`, (elm) => {
-      elm.clearChildren()
-      elm.appendChild(document.createTextNode(value))
-    })
-  })
-}
-
 
 /* request */
-export const getAddTimer = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/timer/add`
-  return () => {
-    return postRequest(url)
+export const saveNewCompany = ({
+  apiEndpoint, postRequest, companyName, originalData, parsedData, typeId,
+}) => {
+  const url = `${apiEndpoint}/company/save`
+  const param = {
+    companyName, originalData, parsedData, typeId,
   }
+  return postRequest(url, param)
 }
-
-export const getAddNotification = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/notification/add`
-  return () => {
-    return postRequest(url)
-  }
-}
-
-export const getSaveMessage = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/message/save`
-  return () => {
-    const messageContentElm = document.querySelector('#messageContent')
-    const param = { message: messageContentElm.value }
-    return postRequest(url, param)
-  }
-}
-
-export const getDeleteMessage = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/message/delete`
-  return () => {
-    const param = {}
-    return postRequest(url, param)
-  }
-}
-
-export const getSaveBackupEmailAddress = ({ apiEndpoint, postRequest }) => {
-  const url = `${apiEndpoint}/backupEmailAddress/save`
-  return () => {
-    const backupEmailAddressInputElm = document.querySelector('#backupEmailAddressInput')
-    const param = { backupEmailAddress: backupEmailAddressInputElm.value }
-    return postRequest(url, param)
-  }
-}
-
-export const getUploadFile = ({ apiEndpoint, postFormRequest }) => {
-  const url = `${apiEndpoint}/form/save`
-  return () => {
-    const profileImageInputElm = document.querySelector('#profileImageInput')
-    const file = profileImageInputElm.files[0]
-    const formData = new FormData()
-    formData.append('file', file)
-    return postFormRequest(url, formData)
-  }
-}
-
 
 /* onClick */
 export const setOnClickAddTimerButton = ({ onClickAddTimerButton }) => {
@@ -78,14 +25,6 @@ export const setOnClickSaveMessageButton = ({ onClickSaveMessageButton }) => {
   saveMessageBtn.onclick = (e) => {
     e.preventDefault()
     onClickSaveMessageButton()
-  }
-}
-
-export const setOnClickDeleteMessageButton = ({ onClickDeleteMessageButton }) => {
-  const deleteMessageBtn = document.querySelector('#deleteMessageBtn')
-  deleteMessageBtn.onclick = (e) => {
-    e.preventDefault()
-    onClickDeleteMessageButton()
   }
 }
 
@@ -129,6 +68,32 @@ export const getLoadUploadedImg = ({ apiEndpoint }) => {
 }
 
 /* show elm */
+export const showCompanyModal = ({ showModal, formatDate, jsonListResult }) => {
+  const modalTemplateElm = document.querySelector('#modalTemplate')
+  const modalElm = modalTemplateElm.cloneNode(true)
+
+  const modalTitleElm = modalElm.querySelector('[data-id="modalTitle"]')
+  modalTitleElm.innerText = '検索結果'
+
+  if (!jsonListResult.result.jsonList || jsonListResult.result.jsonList.length === 0) {
+    const textElm = document.createElement('p')
+    textElm.innerText = '該当する企業が見つかりません。'
+    modalElm.querySelector('[data-id="modalContent"]').appendChild(textElm)
+  } else {
+    jsonListResult.result.jsonList.forEach((row) => {
+      const cardElm = document.querySelector('[data-template-id="cardTemplate"]').cloneNode(true)
+      const dateFormatted = formatDate({ date: new Date(row.dateUpdated) })
+      cardElm.classList.remove('hidden')
+      cardElm.querySelector('[data-template-id="cardTemplateTitle"]').innerText = row.jsonPath
+      cardElm.querySelector('[data-template-id="cardTemplateText"]').innerText = `更新日時: ${dateFormatted}`
+      cardElm.href = `company?companyName=${row.jsonPath}`
+      modalElm.querySelector('[data-id="modalContent"]').appendChild(cardElm)
+    })
+  }
+
+  showModal(modalElm)
+}
+
 export const showMessage = ({ messageResult }) => {
   if (!messageResult || !messageResult.result) {
     return
@@ -142,6 +107,15 @@ export const showEditor = ({ splitPermissionListResult }) => {
     document.querySelector('#editorContainer').classList.remove('hidden')
   } else {
     document.querySelector('#filePermissionRequestContainer').classList.remove('hidden')
+  }
+}
+
+export const showSearchForm = ({ splitPermissionListResult }) => {
+  const { splitPermissionList, clientId } = splitPermissionListResult.result
+  if (splitPermissionList.optional[`rw:${clientId}:json_v1`]) {
+    document.querySelector('#searchGraphContainer').classList.remove('hidden')
+  } else {
+    document.querySelector('#searchGraphJsonPermissionRequestContainer').classList.remove('hidden')
   }
 }
 

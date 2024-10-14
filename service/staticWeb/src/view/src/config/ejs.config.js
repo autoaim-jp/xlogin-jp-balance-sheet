@@ -30,6 +30,18 @@ const ejsConfig = {
     inlineScriptList: [],
     externalScriptList: ['/js/index/app.js'],
   },
+  company: {
+    title: 'company | sample.xlogin.jp',
+    description: 'mypage',
+    author: 'autoaim_jp',
+    breadcrumbList: getBreadcrumbList(['/', '/company']),
+
+    inlineCssList: [],
+    externalCssList: ['/css/tailwind.css'],
+    inlineScriptList: ['/js/company/app.js', '/js/_lib/_chartjs/chart.js', '/js/_lib/_alpinejs/dist/cdn.min.js'],
+    externalScriptList: [],
+  },
+
   mypage: {
     title: 'mypage | sample.xlogin.jp',
     description: 'mypage',

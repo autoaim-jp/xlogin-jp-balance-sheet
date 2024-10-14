@@ -82,17 +82,18 @@ init-xdevkit:
 	cp ./xdevkit/common/xdevkit-setting/browserServerSetting.js ./service/staticWeb/src/setting/browserServerSetting.js
 	
 	rm -rf ./service/staticWeb/src/xdevkit-auth-router
-	cp -r ./xdevkit/common/xdevkit-auth-router ./service/staticWeb/src/
+	cp -rv ./xdevkit/common/xdevkit-auth-router ./service/staticWeb/src/
 	rm -rf ./service/staticWeb/src/xdevkit-auth-router/.git
 	
-	cp -r ./xdevkit/common/xdevkit-view-component/src/js/_xdevkit ./service/staticWeb/src/view/src/js/_lib/
-	cp -r ./xdevkit/common/xdevkit-view-component/src/ejs ./service/staticWeb/src/view/src/ejs/_xdevkit
+	cp -rv ./xdevkit/common/xdevkit-view-component/src/js/_xdevkit ./service/staticWeb/src/view/src/js/_lib/
+	cp -rv ./xdevkit/common/xdevkit-view-component/src/ejs/component ./service/staticWeb/src/view/src/ejs/_xdevkit
+	make lint
 
 # build
 docker-compose-build-app:
 	docker compose -p ${DOCKER_PROJECT_NAME}-app -f ./app/docker/docker-compose.app.yml build
 docker-compose-build-test:
-	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./docker/docker-compose.test.yml build
+	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./app/docker/docker-compose.test.yml build
 docker-compose-build-view:
 	docker compose -p ${DOCKER_PROJECT_NAME}-view -f ./xdevkit/standalone/xdevkit-view-compiler/docker/docker-compose.view.yml build
 
@@ -102,9 +103,7 @@ docker-compose-up-app:
 docker-compose-up-app-d:
 	docker compose -p ${DOCKER_PROJECT_NAME}-app -f ./app/docker/docker-compose.app.yml up -d
 docker-compose-up-test:
-	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./docker/docker-compose.test.yml down 
-	docker volume rm ${DOCKER_PROJECT_NAME}_xl-client-sample-rc-redis
-	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./docker/docker-compose.test.yml up --abort-on-container-exit
+	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./app/docker/docker-compose.test.yml up --abort-on-container-exit
 
 docker-compose-up-view-compile:
 	VIEW_PATH=../../../../service/staticWeb/src/view BUILD_COMMAND="compile" docker compose -p ${DOCKER_PROJECT_NAME}-view -f ./xdevkit/standalone/xdevkit-view-compiler/docker/docker-compose.view.yml up --abort-on-container-exit
@@ -117,7 +116,7 @@ docker-compose-up-view-watch:
 docker-compose-down-app:
 	docker compose -p ${DOCKER_PROJECT_NAME}-app -f ./app/docker/docker-compose.app.yml down --volumes
 docker-compose-down-test:
-	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./docker/docker-compose.test.yml down --volumes
+	docker compose -p ${DOCKER_PROJECT_NAME}-test -f ./app/docker/docker-compose.test.yml down --volumes
 
 # devtool
 docker-compose-up-lint:

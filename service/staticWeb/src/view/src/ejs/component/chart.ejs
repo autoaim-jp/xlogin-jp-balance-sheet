@@ -1,0 +1,90 @@
+<div id='chartWrap' x-data="chartData" x-init="showChart">
+  <div data-template-id="chartTemplate" class='hidden mb-8'></div>
+</div>
+
+
+<script>
+function chartData() {
+  return {
+    async showChart () {
+      let companyName = ''
+      for (const [key, value] of new URLSearchParams(window.location.search.slice(1))) {
+        if (key === 'companyName') {
+          companyName = value
+        }
+      }
+      const messageResult = await a.input.fetchMessage(argNamed({
+        param: { companyName },
+        browserServerSetting: a.setting.browserServerSetting.getList('apiEndpoint'),
+        lib: [a.lib.common.input.getRequest],
+      }))
+      const companyJsonList = messageResult?.result?.jsonContent
+      const chartTemplateElm = document.querySelector('[data-template-id="chartTemplate"]')
+      if (!companyJsonList) {
+        const textElm = document.createElement('p')
+        textElm.innerText = 'データがありません。'
+        document.querySelector('#chartWrap').appendChild(textElm)
+        return
+      }
+
+      Object.entries(companyJsonList).forEach(([graphLabel, companyJson]) => {
+        if (!companyJson || !companyJson.parsedData) {
+          return
+        }
+        // console.log({ graphLabel, companyJson })
+        const { legendList, xAxisLabelList, dataListList, yAxisDirectionList, } = companyJson.parsedData
+        // console.log({ legendList, xAxisLabelList, dataListList, yAxisDirectionList })
+
+        const datasetList = Object.entries(legendList).map(([i, datasetLabel]) => {
+          let yAxisID = 'leftAxis'
+          if (yAxisDirectionList[i] === 'r') {
+            yAxisID = 'rightAxis'
+          }
+          return {
+            label: datasetLabel,
+            data: dataListList[i],
+            yAxisID,
+          }
+        })
+        console.log({ datasetList })
+
+        const ctxWrapElm = chartTemplateElm.cloneNode(true)
+        ctxWrapElm.classList.remove('hidden')
+        const ctxElm = document.createElement('canvas')
+        ctxWrapElm.appendChild(ctxElm)
+        document.querySelector('#chartWrap').appendChild(ctxWrapElm)
+
+        const data = {
+          labels: xAxisLabelList,
+          datasets: datasetList,
+        }
+
+        new Chart(ctxElm, {
+          type: 'line',
+          data,
+          options: {
+            scales: {
+              leftAxis: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+              },
+              rightAxis: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+
+                grid: {
+                  drawOnChartArea: false, // only want the grid lines for one axis to show up
+                },
+              },
+            }
+          }
+        });
+      })
+    }
+  }
+}
+
+</script>
+
